@@ -1,0 +1,7 @@
+pytorch_dml_env/
+pytorch_dml_env_wsl/
+
+# too large
+lang_pool_wiki.txt
+*.npy
+*.pth
