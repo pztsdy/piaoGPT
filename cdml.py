@@ -7,7 +7,11 @@ import time
 import math
 import sys
 import numpy as np
-import torch_directml
+try:
+    import torch_directml
+except ImportError:
+    print("未安装 torch_directml，无法使用 DirectML 设备。请安装 torch_directml 或使用 CUDA 设备。")
+    torch_directml = None
 from tqdm import trange
 
 def get_device():
