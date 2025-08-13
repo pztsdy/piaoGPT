@@ -186,28 +186,17 @@ if __name__ == "__main__":
             model.train()
             start_all = time.time()
 
-            for epoch in range(epochs_to_train):
-                t0 = time.time()
+            for epoch in trange(epochs_to_train, desc="训练进度", unit="epoch"):
                 xb, yb = get_batch(data_tensor, BATCH_SIZE, BLOCK_SIZE)
                 logits = model(xb)
                 B, T, C = logits.shape
                 logits = logits.view(B*T, C)
                 yb = yb.view(B*T)
                 loss = F.cross_entropy(logits, yb)
+
                 optimizer.zero_grad(set_to_none=True)
                 loss.backward()
                 optimizer.step()
-                t1 = time.time()
-
-                epoch_dur = t1 - t0
-                epoch_times.append(epoch_dur)
-                avg_epoch_time = sum(epoch_times)/len(epoch_times)
-                remaining_epochs = epochs_to_train - (epoch+1)
-                eta_seconds = avg_epoch_time * remaining_epochs
-
-                if (epoch + 1) % PRINT_EVERY == 0:
-                    print(f"\nEpoch {epoch+1}/{epochs_to_train}, Loss: {loss.item():.4f}, epoch_time={format_time(epoch_dur)}, avg_epoch={format_time(avg_epoch_time)}")
-                print_progress_bar(epoch+1, epochs_to_train, avg_epoch_time, eta_seconds)
 
             total_time = time.time() - start_all
             print(f"\n训练完成，总耗时: {format_time(total_time)}。保存模型至 {MODEL_PATH}")
